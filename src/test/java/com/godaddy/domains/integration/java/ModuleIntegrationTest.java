@@ -40,27 +40,20 @@ import static org.vertx.testtools.VertxAssert.testComplete;
 public class ModuleIntegrationTest extends TestVerticle {
 
 
-        private int index;
-    @Test
-   public  void itWorksRepeatably()
-    {
-        for (int i = 0; i < 10; i++)
-        {
-            this.index =i;
-            testPing();
-        }
-    }
-
     @Test
   public void testPing() {
-    container.logger().info("in testPing()");
-          final String finalI = String.valueOf(this.index);
-          vertx.eventBus().send("get-address", finalI, new Handler<Message<String>>() {
-              @Override
-              public void handle(Message<String> reply) {
+        int index = 0;
+        for (;index < 100; index++) {
 
-                  assertTrue( reply.body().contains(finalI));
-                  //    assertEquals("pong!", reply.body());
+      container.logger().info("in testPing() " + index);
+            final String finalI = String.valueOf(index);
+            final int finalIndex = index;
+            vertx.eventBus().send("get-address", finalI, new Handler<Message<String>>() {
+                @Override
+                public void handle(Message<String> reply) {
+
+                    assertTrue(reply.body().contains(finalI));
+                    //    assertEquals("pong!", reply.body());
 
         /*
         If we get here, the test is complete
@@ -68,31 +61,37 @@ public class ModuleIntegrationTest extends TestVerticle {
         we cannot assume the test is complete by the time the test method has finished executing like
         in standard synchronous tests
         */
-                  testComplete();
-              }
-          });
+
+                        container.logger().info("Completed the tests :: " + finalIndex);
+                        testComplete();
 
 
 
-  }
-    @Override
-    public void start() {
-        // Make sure we call initialize() - this sets up the assert stuff so assert functionality works correctly
-        initialize();
-        index=0;
-        // Deploy the module - the System property `vertx.modulename` will contain the name of the module so you
-        // don't have to hardecode it in your tests
-        container.deployModule(System.getProperty("vertx.modulename"), new AsyncResultHandler<String>() {
-            @Override
-            public void handle(AsyncResult<String> asyncResult) {
-                // Deployment is asynchronous and this this handler will be called when it's complete (or failed)
-                assertTrue(asyncResult.succeeded());
-                assertNotNull("deploymentID should not be null", asyncResult.result());
-                // If deployed correctly then start the tests!
-                startTests();
-            }
-        });
+                }
+            });
+        }
+
+
     }
+        @Override
+        public void start() {
+            // Make sure we call initialize() - this sets up the assert stuff so assert functionality works correctly
+            initialize();
+
+            // Deploy the module - the System property `vertx.modulename` will contain the name of the module so you
+            // don't have to hardecode it in your tests
+            container.deployModule(System.getProperty("vertx.modulename"), new AsyncResultHandler<String>() {
+                @Override
+                public void handle(AsyncResult<String> asyncResult) {
+                    // Deployment is asynchronous and this this handler will be called when it's complete (or failed)
+                    assertTrue(asyncResult.succeeded());
+                    assertNotNull("deploymentID should not be null", asyncResult.result());
+                    // If deployed correctly then start the tests!
+                    startTests();
+                }
+            });
+        }
+
 
 
 }
