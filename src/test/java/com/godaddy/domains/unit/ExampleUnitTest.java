@@ -1,6 +1,6 @@
 package com.godaddy.domains.unit;
 
-import com.godaddy.domains.PingVerticle;
+import com.godaddy.domains.HttpClientWorker;
 import org.junit.Test;
 
 /*
@@ -24,7 +24,7 @@ public class ExampleUnitTest {
 
   @Test
   public void testVerticle() {
-    PingVerticle vert = new PingVerticle();
+    HttpClientWorker vert = new HttpClientWorker();
 
     // do something with verticle
   }

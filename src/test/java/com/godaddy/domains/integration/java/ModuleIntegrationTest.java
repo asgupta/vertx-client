@@ -42,7 +42,7 @@ public class ModuleIntegrationTest extends TestVerticle {
       for (int i = 0; i <100 ; i++) {
 
           final String finalI = String.valueOf(i);
-          vertx.eventBus().send("ping-address", finalI, new Handler<Message<String>>() {
+          vertx.eventBus().send("get-address", finalI, new Handler<Message<String>>() {
               @Override
               public void handle(Message<String> reply) {
 

@@ -28,12 +28,12 @@ import org.vertx.java.platform.Verticle;
 /*
 This is a simple Java verticle which receives `ping` messages on the event bus and sends back `pong` replies
  */
-public class PingVerticle extends Verticle {
+public class HttpClientWorker extends Verticle {
 
   public void start() {
 
 
-    vertx.eventBus().registerHandler("ping-address", new Handler<Message<String>>() {
+    vertx.eventBus().registerHandler("get-address", new Handler<Message<String>>() {
       @Override
       public void handle(final Message<String> message) {
           final Buffer body = new Buffer();
@@ -80,7 +80,7 @@ public class PingVerticle extends Verticle {
 
     });
 
-    container.logger().info("PingVerticle started");
+    container.logger().info("HttpClientWorker started");
 
   }
 }
