@@ -18,7 +18,11 @@ package com.godaddy.domains;
  */
 
 import org.vertx.java.core.Handler;
+import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.http.HttpClient;
+import org.vertx.java.core.http.HttpClientRequest;
+import org.vertx.java.core.http.HttpClientResponse;
 import org.vertx.java.platform.Verticle;
 
 /*
@@ -31,10 +35,49 @@ public class PingVerticle extends Verticle {
 
     vertx.eventBus().registerHandler("ping-address", new Handler<Message<String>>() {
       @Override
-      public void handle(Message<String> message) {
-        message.reply("pong!");
-        container.logger().info("Sent back pong");
+      public void handle(final Message<String> message) {
+          final Buffer body = new Buffer();
+
+          HttpClient client = vertx.createHttpClient().setPort(8080).setHost("localhost");
+         HttpClientRequest request= client.get("/v1/api/servertime", new Handler<HttpClientResponse>() {
+             @Override
+             public void handle(HttpClientResponse response) {
+                 System.out.println("response status " + response.statusCode());
+
+                 response.dataHandler(new Handler<Buffer>() {
+                     @Override
+                     public void handle(Buffer buffer) {
+                         body.appendBuffer(buffer);
+                     }
+                 });
+
+                 response.endHandler(new Handler<Void>() {
+
+                     @Override
+                     public void handle(Void aVoid) {
+                         container.logger().info("In the end handler ");
+                         System.out.println("The total body received was " + body.length() + " bytes");
+                         System.out.println("The total body received was " + body.toString() + " vals");
+
+                         if(body.length()==0)
+                             try {
+                                 throw new Exception("No response found");
+                             } catch (Exception e) {
+                                 e.printStackTrace();
+                             }
+                         message.reply(body.toString());
+                         container.logger().info("Sent back pong");
+                     }
+                 });
+
+             }
+         });
+          request.putHeader("Content-type", "application/json");
+          request.end();
+          client.close();
+
       }
+
     });
 
     container.logger().info("PingVerticle started");
