@@ -37,9 +37,9 @@ public class PingVerticle extends Verticle {
       @Override
       public void handle(final Message<String> message) {
           final Buffer body = new Buffer();
-
+            String req = message.body();
           HttpClient client = vertx.createHttpClient().setPort(8080).setHost("localhost");
-         HttpClientRequest request= client.get("/v1/api/servertime", new Handler<HttpClientResponse>() {
+         HttpClientRequest request= client.get("/v1/api/domains/"+req + "/" + req, new Handler<HttpClientResponse>() {
              @Override
              public void handle(HttpClientResponse response) {
                  System.out.println("response status " + response.statusCode());

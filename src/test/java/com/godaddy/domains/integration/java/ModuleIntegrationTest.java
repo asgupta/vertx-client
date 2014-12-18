@@ -39,10 +39,15 @@ public class ModuleIntegrationTest extends TestVerticle {
   @Test
   public void testPing() {
     container.logger().info("in testPing()");
-    vertx.eventBus().send("ping-address", "ping!", new Handler<Message<String>>() {
-      @Override
-      public void handle(Message<String> reply) {
-    //    assertEquals("pong!", reply.body());
+      for (int i = 0; i <100 ; i++) {
+
+          final String finalI = String.valueOf(i);
+          vertx.eventBus().send("ping-address", finalI, new Handler<Message<String>>() {
+              @Override
+              public void handle(Message<String> reply) {
+
+                  assertTrue( reply.body().contains(finalI));
+                  //    assertEquals("pong!", reply.body());
 
         /*
         If we get here, the test is complete
@@ -50,9 +55,12 @@ public class ModuleIntegrationTest extends TestVerticle {
         we cannot assume the test is complete by the time the test method has finished executing like
         in standard synchronous tests
         */
-        testComplete();
+                  testComplete();
+              }
+          });
+
       }
-    });
+
   }
 
   @Test
