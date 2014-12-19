@@ -1,9 +1,3 @@
-# Vert.x Example Maven Project
+# Vert.x EventBus project
 
-Example project for creating a Vert.x module with a Gradle build.
-
-By default this module contains a simple Java verticle which listens on the event bus and responds to `ping!`
-messages with `pong!`.
-
-This example also shows you how to write tests in Java, Groovy, Ruby and Python
-
+The project was to test the event buses and their different options along with the unit testing of the event buses in vertx
