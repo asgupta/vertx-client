@@ -94,4 +94,6 @@ public class AsyncHandlerEventBusTest extends TestVerticle {
             testComplete();
         }
     }
+
+
 }
